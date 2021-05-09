@@ -1,18 +1,37 @@
 <template>
     <div>
-        <h3 class="text-center">Add Post</h3>
+        <h3 class="text-center">Adicionar Pessoa</h3>
         <div class="row">
-            <div class="col-md-6">
-                <form @submit.prevent="addPost">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-control" v-model="post.title">
+            <div class="col-md-12">
+                <form @submit.prevent="addPeople">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Nome</label>
+                            <input type="text" class="form-control" v-model="people.name">
+                        </div>
+                        <div class="col">
+                            <label>Email</label>
+                            <input type="email" class="form-control" v-model="people.email">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" class="form-control" v-model="post.description">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Senha</label>
+                            <input type="password" class="form-control" v-model="people.password">
+                        </div>
+                        <div class="col">
+                            <label>Telefone</label>
+                            <input type="tel" class="form-control" v-model="people.fone">
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Post</button>
+                   
+                    <div class="form-row mt-4">
+                        <label>Telefone</label>
+                        <input type="file" accept="image/jpeg, image/png" class="form-control" @change="handleOnChange">
+                    </div>
+                    <div class="form-row mt-4">
+                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -23,20 +42,36 @@
     export default {
         data() {
             return {
-                post: {}
+                people: {}
             }
         },
         methods: {
-            addPost() {
- 
-                this.axios
-                    .post('http://localhost:8000/api/post/add', this.post)
-                    .then(response => (
-                        this.$router.push({name: 'home'})
-                        // console.log(response.data)
-                    ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+            handleOnChange(e){
+
+                this.people.image = e.target.files[0];
+            },
+            addPeople() {
+                const data = new FormData();
+                data.append('name', this.people.name);
+                data.append('email', this.people.email);
+                data.append('password', this.people.password);
+                data.append('fone', this.people.fone);
+                data.append('image', this.people.image);
+                axios({
+                        method: 'post',
+                        url: '../api/people/',
+                        data: data,
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    })
+                    .then((response) => {
+                        //this.$router.push({name: 'home'});
+                    })
+                    .catch((error) =>{
+                        if(error. response){
+                            console.log(error. response. data)
+                            console.log(error. response. status);
+                        }
+                    });
             }
         }
     }

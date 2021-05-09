@@ -1866,25 +1866,55 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      post: {}
+      people: {}
     };
   },
   methods: {
-    addPost: function addPost() {
-      var _this = this;
-
-      this.axios.post('http://localhost:8000/api/post/add', this.post).then(function (response) {
-        return _this.$router.push({
-          name: 'home'
-        }) // console.log(response.data)
-        ;
+    handleOnChange: function handleOnChange(e) {
+      this.people.image = e.target.files[0];
+    },
+    addPeople: function addPeople() {
+      var data = new FormData();
+      data.append('name', this.people.name);
+      data.append('email', this.people.email);
+      data.append('password', this.people.password);
+      data.append('fone', this.people.fone);
+      data.append('image', this.people.image);
+      axios({
+        method: 'post',
+        url: '../api/people/',
+        data: data,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {//this.$router.push({name: 'home'});
       })["catch"](function (error) {
-        return console.log(error);
-      })["finally"](function () {
-        return _this.loading = false;
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+        }
       });
     }
   }
@@ -1943,40 +1973,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -1987,25 +1983,32 @@ __webpack_require__.r(__webpack_exports__);
     this.loadPeoples();
   },
   methods: {
-    deletePost: function deletePost(id) {
+    deletePeople: function deletePeople(id) {
       var _this = this;
 
-      this.axios["delete"]("http://localhost:8000/api/post/delete/".concat(id)).then(function (response) {
-        var i = _this.people.map(function (item) {
-          return item.id;
-        }).indexOf(id); // find index of your object
+      axios["delete"]("api/people/".concat(id)).then(function (response) {
+        var i = _this.peoples.map(function (data) {
+          return data.id;
+        }).indexOf(id);
 
-
-        _this.posts.splice(i, 1);
+        _this.peoples.splice(i, 1);
+      })["catch"](function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+        }
       });
     },
     loadPeoples: function loadPeoples() {
       var _this2 = this;
 
-      axios.get("api/peoples").then(function (response) {
+      axios.get('api/peoples').then(function (response) {
         _this2.peoples = response.data.data;
       })["catch"](function (error) {
-        return alert(error.message);
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+        }
       });
     }
   }
@@ -2024,10 +2027,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
-//
-//
 //
 //
 //
@@ -2079,27 +2078,75 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      post: {}
+      people: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        fone: '',
+        image: ''
+      }
     };
   },
   created: function created() {
     var _this = this;
 
-    this.axios.get("http://localhost:8000/api/post/edit/".concat(this.$route.params.id)).then(function (response) {
-      _this.post = response.data; // console.log(response.data);
+    axios.get("/api/people/".concat(this.$route.params.id)).then(function (response) {
+      _this.people = response.data.data;
     });
   },
   methods: {
-    updatePost: function updatePost() {
+    handleOnChange: function handleOnChange(e) {
+      this.people.image = e.target.files[0];
+    },
+    updatePeople: function updatePeople() {
       var _this2 = this;
 
-      this.axios.post("http://localhost:8000/api/post/update/".concat(this.$route.params.id), this.post).then(function (response) {
+      var data = new FormData();
+      data.append('id', this.people.id);
+      data.append('name', this.people.name);
+      data.append('email', this.people.email);
+      data.append('password', this.people.password);
+      data.append('fone', this.people.fone);
+      data.append('image', this.people.image);
+      axios({
+        method: "post",
+        url: "../api/people/".concat(this.$route.params.id),
+        data: data,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(function (response) {
         _this2.$router.push({
           name: 'home'
         });
+      })["catch"](function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+        }
       });
     }
   }
@@ -38058,85 +38105,160 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h3", { staticClass: "text-center" }, [_vm._v("Add Post")]),
+    _c("h3", { staticClass: "text-center" }, [_vm._v("Adicionar Pessoa")]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { staticClass: "col-md-12" }, [
         _c(
           "form",
           {
             on: {
               submit: function($event) {
                 $event.preventDefault()
-                return _vm.addPost($event)
+                return _vm.addPeople($event)
               }
             }
           },
           [
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Title")]),
+            _c("div", { staticClass: "form-row" }, [
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Nome")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.name,
+                      expression: "people.name"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.people.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "name", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Email")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.email,
+                      expression: "people.email"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "email" },
+                  domProps: { value: _vm.people.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "email", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-row" }, [
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Senha")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.password,
+                      expression: "people.password"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "password" },
+                  domProps: { value: _vm.people.password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "password", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Telefone")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.fone,
+                      expression: "people.fone"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "tel" },
+                  domProps: { value: _vm.people.fone },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "fone", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-row mt-4" }, [
+              _c("label", [_vm._v("Telefone")]),
               _vm._v(" "),
               _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.post.title,
-                    expression: "post.title"
-                  }
-                ],
                 staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: _vm.post.title },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.post, "title", $event.target.value)
-                  }
-                }
+                attrs: { type: "file", accept: "image/jpeg, image/png" },
+                on: { change: _vm.handleOnChange }
               })
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Description")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.post.description,
-                    expression: "post.description"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: _vm.post.description },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.post, "description", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-              [_vm._v("Add Post")]
-            )
+            _vm._m(0)
           ]
         )
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row mt-4" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Adicionar")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -38172,19 +38294,13 @@ var render = function() {
               [
                 _c("div", { staticClass: "card" }, [
                   _c("img", {
-                    staticClass: "card-img-bottom",
+                    staticClass: "card-img-top",
                     attrs: { src: "storage/" + people.image, alt: "Card image" }
                   }),
                   _vm._v(" "),
                   _c("div", { staticClass: "card-body" }, [
                     _c("h4", { staticClass: "card-title" }, [
-                      _vm._v(_vm._s(people.email))
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }, [
-                      _vm._v(
-                        "\n                              Some example text some example text. Jane Doe is an architect and\n                              engineer\n                          "
-                      )
+                      _vm._v(_vm._s(people.name))
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mb-2" }, [
@@ -38209,7 +38325,46 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "card-footer" }, [
                       _c("div", { staticClass: "row" }, [
-                        _vm._m(0, true),
+                        _c(
+                          "div",
+                          { staticClass: "col-lg-6 col-md-6 col-xs-6" },
+                          [
+                            _c(
+                              "div",
+                              { staticClass: "btn-group" },
+                              [
+                                _c(
+                                  "router-link",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    attrs: {
+                                      to: {
+                                        name: "edit",
+                                        params: { id: people.id }
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-pen" })]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-danger",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deletePeople(people.id)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-trash-alt" })]
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -38236,24 +38391,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-lg-6 col-md-6 col-xs-6" }, [
-      _c("div", { staticClass: "btn-group" }, [
-        _c("a", { staticClass: "btn btn-primary", attrs: { type: "button" } }, [
-          _c("i", { staticClass: "fas fa-trash-alt" })
-        ]),
-        _vm._v(" "),
-        _c("a", { staticClass: "btn btn-danger", attrs: { type: "button" } }, [
-          _c("i", { staticClass: "fas fa-trash-alt" })
-        ])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -38280,11 +38418,9 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
-      _vm._m(0),
-      _vm._v(" "),
       _c(
         "nav",
-        { staticClass: "navbar navbar-expand-lg navbar-light bg-light" },
+        { staticClass: "navbar navbar-expand-lg navbar-light bg-light mt-4" },
         [
           _c("div", { staticClass: "collapse navbar-collapse" }, [
             _c(
@@ -38294,13 +38430,16 @@ var render = function() {
                 _c(
                   "router-link",
                   { staticClass: "nav-item nav-link", attrs: { to: "/" } },
-                  [_vm._v("Home")]
+                  [_vm._v("Inicio "), _c("i", { staticClass: "fas fa-home" })]
                 ),
                 _vm._v(" "),
                 _c(
                   "router-link",
                   { staticClass: "nav-item nav-link", attrs: { to: "/add" } },
-                  [_vm._v("Add Post")]
+                  [
+                    _vm._v("Adicionar Pessoa "),
+                    _c("i", { staticClass: "fas fa-user-plus" })
+                  ]
                 )
               ],
               1
@@ -38316,25 +38455,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "text-center",
-        staticStyle: { margin: "20px 0px 20px 0px" }
-      },
-      [
-        _c("span", { staticClass: "text-secondary" }, [
-          _vm._v("Laravel Vue CRUD Example")
-        ])
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -38358,85 +38479,160 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h3", { staticClass: "text-center" }, [_vm._v("Edit Post")]),
+    _c("h3", { staticClass: "text-center" }, [_vm._v("Editar Pessoa")]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { staticClass: "col-md-12" }, [
         _c(
           "form",
           {
             on: {
               submit: function($event) {
                 $event.preventDefault()
-                return _vm.updatePost($event)
+                return _vm.updatePeople($event)
               }
             }
           },
           [
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Title")]),
+            _c("div", { staticClass: "form-row" }, [
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Nome")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.name,
+                      expression: "people.name"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.people.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "name", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Email")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.email,
+                      expression: "people.email"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "email" },
+                  domProps: { value: _vm.people.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "email", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-row" }, [
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Senha")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.password,
+                      expression: "people.password"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "password" },
+                  domProps: { value: _vm.people.password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "password", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _c("label", [_vm._v("Telefone")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.people.fone,
+                      expression: "people.fone"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "tel" },
+                  domProps: { value: _vm.people.fone },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.people, "fone", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-row mt-4" }, [
+              _c("label", [_vm._v("Telefone")]),
               _vm._v(" "),
               _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.post.title,
-                    expression: "post.title"
-                  }
-                ],
                 staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: _vm.post.title },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.post, "title", $event.target.value)
-                  }
-                }
+                attrs: { type: "file", accept: "image/jpeg, image/png" },
+                on: { change: _vm.handleOnChange }
               })
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Description")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.post.description,
-                    expression: "post.description"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: _vm.post.description },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.post, "description", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-              [_vm._v("Update Post")]
-            )
+            _vm._m(0)
           ]
         )
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row mt-4" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Atualizar")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 

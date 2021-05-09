@@ -1,18 +1,37 @@
 <template>
     <div>
-        <h3 class="text-center">Edit Post</h3>
+        <h3 class="text-center">Editar Pessoa</h3>
         <div class="row">
-            <div class="col-md-6">
-                <form @submit.prevent="updatePost">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-control" v-model="post.title">
+            <div class="col-md-12">
+                <form @submit.prevent="updatePeople">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Nome</label>
+                            <input type="text" class="form-control" v-model="people.name">
+                        </div>
+                        <div class="col">
+                            <label>Email</label>
+                            <input type="email" class="form-control" v-model="people.email">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" class="form-control" v-model="post.description">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Senha</label>
+                            <input type="password" class="form-control" v-model="people.password">
+                        </div>
+                        <div class="col">
+                            <label>Telefone</label>
+                            <input type="tel" class="form-control" v-model="people.fone">
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Post</button>
+                   
+                    <div class="form-row mt-4">
+                        <label>Telefone</label>
+                        <input type="file" accept="image/jpeg, image/png" class="form-control" @change="handleOnChange">
+                    </div>
+                    <div class="form-row mt-4">
+                        <button type="submit" class="btn btn-primary">Atualizar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -23,23 +42,51 @@
     export default {
         data() {
             return {
-                post: {}
+                people: {
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    fone: '',
+                    image: ''
+                }
             }
         },
         created() {
-            this.axios
-                .get(`http://localhost:8000/api/post/edit/${this.$route.params.id}`)
+            axios
+                .get(`/api/people/${this.$route.params.id}`)
                 .then((response) => {
-                    this.post = response.data;
-                    // console.log(response.data);
+                    this.people = response.data.data;
+                
                 });
         },
         methods: {
-            updatePost() {
-                this.axios
-                    .post(`http://localhost:8000/api/post/update/${this.$route.params.id}`, this.post)
+            handleOnChange(e){
+
+                this.people.image = e.target.files[0];
+            },
+            updatePeople() {
+                const data = new FormData();
+                data.append('id', this.people.id);
+                data.append('name', this.people.name);
+                data.append('email', this.people.email);
+                data.append('password', this.people.password);
+                data.append('fone', this.people.fone);
+                data.append('image', this.people.image);
+                axios({
+                        method: "post",
+                        url: `../api/people/${this.$route.params.id}`,
+                        data: data,
+                        headers: { "Content-Type": "multipart/form-data" },
+                    })
                     .then((response) => {
                         this.$router.push({name: 'home'});
+                    })
+                    .catch((error) =>{
+                        if(error. response){
+                            console.log(error. response. data)
+                            console.log(error. response. status);
+                        }
                     });
             }
         }

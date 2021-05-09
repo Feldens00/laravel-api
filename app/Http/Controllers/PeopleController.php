@@ -31,16 +31,17 @@ class PeopleController extends Controller
             'required' => 'O campo :attribute é obrigatório!',
             'name.min' => 'É necessário no mínimo 5 caracteres no nome!',
             'email.email' => 'Digite um email válido!',
+            'password.min' => 'É necessário no mínimo 5 caracteres no nome!',
             'fone.max' => 'O máximo de caracteres no telefone é 11!',
             'fone.numeric' => 'Somente valores numéricos!',
-            'image.image' => 'O arquivo precisa ser do tipo imagem!'
+            'image.image' => 'Adicone uma imagem valida!'
         ];
     
         
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:5',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:5',
             'fone' => 'required|numeric|max:99999999999',
             'image' => 'required|image'
         ], $message);
@@ -107,6 +108,7 @@ class PeopleController extends Controller
             'required' => 'O campo :attribute é obrigatório!',
             'name.min' => 'É necessário no mínimo 5 caracteres no nome!',
             'email.email' => 'Digite um email válido!',
+            'password.min' => 'É necessário no mínimo 5 caracteres no nome!',
             'fone.max' => 'O máximo de caracteres no telefone é 11!',
             'fone.numeric' => 'Somente valores numéricos!',
             'image.image' => 'O arquivo precisa ser do tipo imagem!'
@@ -117,77 +119,100 @@ class PeopleController extends Controller
             
             'name' => 'required|min:5',
             'email' => 'email',
-            'fone' => 'numeric|max:99999999999',
-            'image' => 'image'
+            'password' => 'min:5',
+            'fone' => 'numeric|max:99999999999'
         ], $message);
 
         if ($validator->fails()) {
+
             return response()->json($validator->errors(),401);
+
         } else {
-            
-            if ($request->hasFile('image') && $request->file('image')->isValid()){
 
-                if( Storage::disk('public')->exists($people->image)) {
+            if($request->input('image')){
 
-                    Storage::disk('public')->delete($people->image);
-                } 
-
-                $destination_path = 'public/images';
-                $image = $request->file('image');
-                $extension = $image->extension(); 
-                $image_name = $image->getClientOriginalName();
-
-                if (Storage::disk('public')->exists('images/'.$image_name)){
-
-                    $result = [
-                        'status'=> 'error',
-                        'mensagem' => 'Esta imagem ja foi cadastrada!'
-                    ];
-                    return response()->json($result, 401);
-
-                } else{
-                    $request->file('image')->storeAs($destination_path,$image_name);
-                    
-                    if($request->input('name')){
-                        $people->name = $request->input('name');
-                    }
-
-                    if($request->input('email')){
-                        $people->email = $request->input('email');
-                    }
-
-                    if($request->input('password')){
-                        $people->password = $request->input('password');
-                    }
-
-                    if($request->input('fone')){
-                        $people->fone = $request->input('fone');
-                    }
-
-                    $people->image = 'images/'.$image_name;
-
-                    if ($people->save()) {
-                        new PeopleResource($people);
-                        $result = [
-                            'status'=> 'success',
-                            'mensagem' => 'Dados da pessoa foram atualizados'
-                        ];
-                        return response()->json($result, 200);
-
-                    } else{
-                        $result = [
-                            'status'=> 'error',
-                            'mensagem' => 'Erro ao salvar o editar!'
-                        ];
-                        return response()->json($result, 401);
-                    }
-
+                if($request->input('name')){
+                    $people->name = $request->input('name');
                 }
 
+                if($request->input('email')){
+                    $people->email = $request->input('email');
+                }
+
+                if($request->input('password')){
+                    $people->password = $request->input('password');
+                }
+
+                if($request->input('fone')){
+                    $people->fone = $request->input('fone');
+                }
+              
             } else {
+
+                if ($request->hasFile('image') && $request->file('image')->isValid()){
+
+                    if( Storage::disk('public')->exists($people->image)) {
+    
+                        Storage::disk('public')->delete($people->image);
+                    } 
+    
+                    $destination_path = 'public/images';
+                    $image = $request->file('image');
+                    $extension = $image->extension(); 
+                    $image_name = $image->getClientOriginalName();
+    
+                    if (Storage::disk('public')->exists('images/'.$image_name)){
+    
+                        $result = [
+                            'status'=> 'error',
+                            'mensagem' => 'Esta imagem ja foi cadastrada!'
+                        ];
+                        return response()->json($result, 401);
+    
+                    } else{
+                        $request->file('image')->storeAs($destination_path,$image_name);
+                        
+                        if($request->input('name')){
+                            $people->name = $request->input('name');
+                        }
+    
+                        if($request->input('email')){
+                            $people->email = $request->input('email');
+                        }
+    
+                        if($request->input('password')){
+                            $people->password = $request->input('password');
+                        }
+    
+                        if($request->input('fone')){
+                            $people->fone = $request->input('fone');
+                        }
+    
+                        $people->image = 'images/'.$image_name;
+    
+                    }
+    
+                } else {
+                    $result = [
+                        'status'=> 'error',
+                        'mensagem' => 'Imagem não é valida!'
+                    ];
+                    return response()->json($result, 401);
+                }
+            }
+
+            if ($people->save()) {
+                new PeopleResource($people);
+                $result = [
+                    'status'=> 'success',
+                    'mensagem' => 'Dados da pessoa foram atualizados'
+                ];
+                return response()->json($result, 200);
+
+            } else{
                 $result = [
                     'status'=> 'error',
-                    'mensagem' => 'Imagem não é valida!'
+                    'mensagem' => 'Erro ao salvar o editar!'
                 ];
                 return response()->json($result, 401);
             }
