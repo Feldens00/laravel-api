@@ -21,7 +21,7 @@ $ composer update
 $ php artisan key:generate
 
 # gere o link para acesso dos conteudos na pasta storage
-$ php storage link
+$ php artisan storage:link
 
 # gere as tabelas no db
 $ php artisan migrate
