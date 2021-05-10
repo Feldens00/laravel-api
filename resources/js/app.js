@@ -13,7 +13,9 @@ import VueRouter from 'vue-router';
 import VueAxios from 'vue-axios';
 import axios from 'axios';
 import {routes} from './routes';
+import {BootstrapVue} from 'bootstrap-vue';
  
+Vue.use(BootstrapVue);
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
  

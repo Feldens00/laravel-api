@@ -5,21 +5,21 @@
             <div class="col-md-12">
                 <form @submit.prevent="addPeople">
                     <div class="form-row">
-                        <div class="col">
+                        <div class="col-md-6 col-12">
                             <label>Nome</label>
                             <input type="text" class="form-control" v-model="people.name">
                         </div>
-                        <div class="col">
+                        <div class="col-md-6 col-12">
                             <label>Email</label>
                             <input type="email" class="form-control" v-model="people.email">
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="col">
+                        <div class="col-md-6 col-12">
                             <label>Senha</label>
-                            <input type="password" class="form-control" v-model="people.password">
+                            <input type="text" class="form-control" v-model="people.password">
                         </div>
-                        <div class="col">
+                        <div class="col-md-6 col-12">
                             <label>Telefone</label>
                             <input type="tel" class="form-control" v-model="people.fone">
                         </div>
@@ -64,7 +64,7 @@
                         headers: { 'Content-Type': 'multipart/form-data' },
                     })
                     .then((response) => {
-                        //this.$router.push({name: 'home'});
+                        this.$router.push({name: 'home'});
                     })
                     .catch((error) =>{
                         if(error. response){
