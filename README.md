@@ -3,8 +3,6 @@
 
 API desenvolvida em laravel 8, CRUD de pessoas/usuarios. Utilizado Vue.js para consumir a api e gerar o front end.
 
-## Passos para instalação e teste
-
 ### Passos para instalação e teste
 
 ```bash
